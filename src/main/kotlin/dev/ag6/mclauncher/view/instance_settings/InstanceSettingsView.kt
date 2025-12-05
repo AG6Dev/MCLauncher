@@ -2,23 +2,36 @@ package dev.ag6.mclauncher.view.instance_settings
 
 import dev.ag6.mclauncher.instance.GameInstance
 import dev.ag6.mclauncher.instance.InstanceManager
-import dev.ag6.mclauncher.instance.component.JavaComponent
+import dev.ag6.mclauncher.instance.component.settings.Setting
+import dev.ag6.mclauncher.instance.component.settings.SettingCategory
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.View
 import dev.ag6.mclauncher.view.components.ContentBackButton
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.geometry.Pos
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.Label
+import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Region
-import javafx.scene.layout.VBox
 import javafx.scene.text.Font
+import java.util.*
 
 class InstanceSettingsView(private val original: GameInstance) : View {
     private val editedInstance: GameInstance = original.clone()
+
+    private val organisedSettings: EnumMap<SettingCategory, List<Setting<*>>> = EnumMap(SettingCategory::class.java)
+
+    init {
+        for (setting in editedInstance.configurableComponents.flatMap { it.getSettings() }) {
+            val category = setting.category
+            val settingsInCategory = organisedSettings.getOrDefault(category, emptyList())
+            organisedSettings[category] = settingsInCategory + setting
+        }
+    }
 
     override fun build(): Region {
         return createContainer()
@@ -31,19 +44,14 @@ class InstanceSettingsView(private val original: GameInstance) : View {
     }
 
     private fun createOptions(): TabPane = TabPane().apply {
-//        tabs += createConsoleTab()
-        tabs += createGeneralTab()
-    }
-
-    private fun createOptionField(text: String, onType: (field: TextField, currentText: String) -> Unit): TextField =
-        TextField().apply {
-            onKeyTyped = EventHandler { onType(this, this.text) }
-            promptText = text
-            setText(editedInstance.getComponent<JavaComponent>()?.javaPath)
+        for ((category, settings) in organisedSettings) {
+            tabs += SettingsTab(category, settings)
         }
+    }
 
     private fun createNavigationButtons(): HBox = HBox(10.0).apply {
         alignment = Pos.CENTER
+        padding = Insets(10.0)
         children += ContentBackButton("Cancel")
         children += createApplyButton()
     }
@@ -57,25 +65,13 @@ class InstanceSettingsView(private val original: GameInstance) : View {
 
     private fun createHeaderBox(): HBox = HBox(10.0).apply {
         alignment = Pos.CENTER_LEFT
+        padding = Insets(10.0)
         children += ImageView(original.icon ?: "default_icons/grass.png").apply {
             fitWidth = 64.0
             fitHeight = 64.0
         }
         children += Label("Settings for ${original.name}").apply {
             font = Font.font(32.0)
-        }
-    }
-
-    //TODO: This is temporary until I create the instance component system
-    private fun createGeneralTab(): Tab = Tab("General").apply {
-        isClosable = false
-        content = ScrollPane().apply {
-            content = VBox(10.0).apply {
-                padding = Insets(10.0, 0.0, 0.0, 0.0)
-                children += createOptionField("Java Path (java.exe/java)") { field, text ->
-                    editedInstance.getComponent<JavaComponent>()?.javaPath = text
-                }
-            }
         }
     }
 }

@@ -31,6 +31,8 @@ data class GameInstance(
         get() = components.filterIsInstance<MainClassProvider>().last()
     val launchComponents: List<LaunchComponent>
         get() = components.filterIsInstance<LaunchComponent>()
+    val configurableComponents: List<ConfigurableComponent>
+        get() = components.filterIsInstance<ConfigurableComponent>()
 
     fun addDefaultComponents() {
         components.add(ComponentRegistry.createComponent("java")!!)
@@ -54,6 +56,10 @@ data class GameInstance(
         } catch (e: Exception) {
             MCLauncher.LOGGER.error(e) { "Error while saving instance $name, $id" }
         }
+    }
+
+    inline fun <reified T : Component> getComponentById(componentId: String): T? {
+        return components.filterIsInstance<T>().firstOrNull { it.getComponentId() == componentId }
     }
 
     private fun toJson(): JsonObject {

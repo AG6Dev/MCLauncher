@@ -65,6 +65,7 @@ class MCLauncher : Application() {
         val GSON: Gson = GsonBuilder()
             .registerTypeAdapter(Argument::class.java, ArgumentDeserializer())
             .registerTypeAdapter(ArgumentValue::class.java, ArgumentValueDeserializer())
+            .serializeNulls()
             .setPrettyPrinting()
             .create()
     }
