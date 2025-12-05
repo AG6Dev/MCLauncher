@@ -4,6 +4,7 @@ import dev.ag6.mclauncher.instance.GameInstance
 import dev.ag6.mclauncher.instance.InstanceManager
 import dev.ag6.mclauncher.launch.InstanceLauncher
 import dev.ag6.mclauncher.util.createSpacer
+import dev.ag6.mclauncher.util.getImageOrDefault
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.components.ConfirmActionWindow
 import dev.ag6.mclauncher.view.instance_settings.InstanceSettingsView
@@ -40,12 +41,12 @@ class InstanceListItem(private val instance: GameInstance) : HBox() {
         children += createInfo()
     }
 
-    //TODO: Change this an actual icon
-    private fun createIcon(): ImageView = ImageView(instance.icon ?: "default_icons/grass.png").apply {
+    private fun createIcon(): ImageView = ImageView(getImageOrDefault(instance.icon, "default_icons/grass.png")).apply {
         fitWidth = 48.0
         fitHeight = 48.0
         isPreserveRatio = true
     }
+
 
     private fun createInfo(): VBox = VBox().apply {
         alignment = Pos.CENTER_LEFT

@@ -1,5 +1,6 @@
 package dev.ag6.mclauncher.view.instance_settings
 
+import dev.ag6.mclauncher.instance.GameInstance
 import dev.ag6.mclauncher.instance.component.settings.*
 import javafx.beans.property.Property
 import javafx.geometry.Pos
@@ -39,7 +40,7 @@ class SettingsTab(category: SettingCategory, private val settings: List<Setting<
         children += Label(setting.name)
 
         val textField = TextField()
-        textField.textProperty().bindBidirectional(setting.value)
+        textField.textProperty().bindBidirectional(setting.getProperty())
         children += textField
     }
 
@@ -47,7 +48,7 @@ class SettingsTab(category: SettingCategory, private val settings: List<Setting<
         children += Label(setting.name)
 
         val textField = TextField()
-        textField.textProperty().bindBidirectional(setting.value, NumberStringConverter())
+        textField.textProperty().bindBidirectional(setting.getProperty(), NumberStringConverter())
         children += textField
     }
 
@@ -56,14 +57,21 @@ class SettingsTab(category: SettingCategory, private val settings: List<Setting<
 
         val comboBox = ComboBox<Any>()
         comboBox.items.addAll(setting.choices)
-        comboBox.valueProperty().bindBidirectional(setting.value as Property<Any>)
+        comboBox.valueProperty().bindBidirectional(setting.getProperty() as Property<Any>)
         children += comboBox
     }
 
     private fun createBooleanSetting(setting: BooleanSetting): VBox = VBox(5.0).apply {
         val checkBox = CheckBox(setting.name)
-        checkBox.selectedProperty().bindBidirectional(setting.value)
+        checkBox.selectedProperty().bindBidirectional(setting.getProperty())
         children += checkBox
+    }
+
+    companion object {
+        fun generalTab(instance: GameInstance): SettingsTab {
+            val generalSettings = instance.getInstanceCoreSettings()
+            return SettingsTab(SettingCategory.GENERAL, generalSettings)
+        }
     }
 
 }

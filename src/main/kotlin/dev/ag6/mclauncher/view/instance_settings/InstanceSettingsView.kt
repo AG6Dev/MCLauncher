@@ -4,6 +4,7 @@ import dev.ag6.mclauncher.instance.GameInstance
 import dev.ag6.mclauncher.instance.InstanceManager
 import dev.ag6.mclauncher.instance.component.settings.Setting
 import dev.ag6.mclauncher.instance.component.settings.SettingCategory
+import dev.ag6.mclauncher.util.getImageOrDefault
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.View
 import dev.ag6.mclauncher.view.components.ContentBackButton
@@ -44,6 +45,7 @@ class InstanceSettingsView(private val original: GameInstance) : View {
     }
 
     private fun createOptions(): TabPane = TabPane().apply {
+        tabs += SettingsTab.generalTab(editedInstance)
         for ((category, settings) in organisedSettings) {
             tabs += SettingsTab(category, settings)
         }
@@ -66,7 +68,7 @@ class InstanceSettingsView(private val original: GameInstance) : View {
     private fun createHeaderBox(): HBox = HBox(10.0).apply {
         alignment = Pos.CENTER_LEFT
         padding = Insets(10.0)
-        children += ImageView(original.icon ?: "default_icons/grass.png").apply {
+        children += ImageView(getImageOrDefault(editedInstance.icon, "default_icons/grass.png")).apply {
             fitWidth = 64.0
             fitHeight = 64.0
         }

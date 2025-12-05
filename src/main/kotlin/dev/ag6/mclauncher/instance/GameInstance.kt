@@ -8,24 +8,45 @@ import dev.ag6.mclauncher.instance.component.ConfigurableComponent
 import dev.ag6.mclauncher.instance.component.LaunchComponent
 import dev.ag6.mclauncher.instance.component.MainClassProvider
 import dev.ag6.mclauncher.instance.component.registry.ComponentRegistry
+import dev.ag6.mclauncher.instance.component.settings.ChoiceSetting
+import dev.ag6.mclauncher.instance.component.settings.Setting
+import dev.ag6.mclauncher.instance.component.settings.SettingCategory
+import dev.ag6.mclauncher.instance.component.settings.StringSetting
 import dev.ag6.mclauncher.minecraft.MinecraftVersion
 import dev.ag6.mclauncher.minecraft.MinecraftVersionHandler
 import dev.ag6.mclauncher.util.toPath
+import javafx.beans.property.SimpleObjectProperty
+import javafx.beans.property.SimpleStringProperty
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 import kotlin.io.path.bufferedWriter
 import kotlin.io.path.createDirectories
 
-data class GameInstance(
+//TODO: Cache icon images
+class GameInstance(
     val id: UUID = UUID.randomUUID(),
-    var name: String,
-    var icon: String? = "default_icons/grass.png",
-    var version: MinecraftVersion?,
-    var javaPath: String? = "",
-    var directory: String,
+    name: String,
+    icon: String? = "default_icons/grass.png",
+    version: MinecraftVersion?,
+    val directory: String,
     var lastPlayed: String? = "",
 ) : Cloneable {
+    val nameProperty = SimpleStringProperty(name)
+    var name: String
+        get() = nameProperty.get()
+        set(value) = nameProperty.set(value)
+
+    val iconProperty = SimpleStringProperty(icon)
+    var icon: String?
+        get() = iconProperty.get()
+        set(value) = iconProperty.set(value)
+
+    val versionProperty = SimpleObjectProperty<MinecraftVersion?>(version)
+    var version: MinecraftVersion?
+        get() = versionProperty.get()
+        set(value) = versionProperty.set(value)
+
     val components: MutableList<Component> = mutableListOf()
     val mainClassProvider: MainClassProvider
         get() = components.filterIsInstance<MainClassProvider>().last()
@@ -94,8 +115,33 @@ data class GameInstance(
         return directory.toPath().resolve(".minecraft").createDirectories()
     }
 
+    fun getInstanceCoreSettings(): List<Setting<*>> {
+        return listOf(
+            StringSetting(
+                name = "Instance Name",
+                description = "The name of this instance.",
+                property = nameProperty,
+                category = SettingCategory.GENERAL
+            ),
+            StringSetting(
+                name = "Icon Path",
+                description = "The icon for this instance.",
+                property = iconProperty,
+                category = SettingCategory.GENERAL
+            ),
+            //TODO: Make this a proper version selector
+            ChoiceSetting(
+                name = "Minecraft Version",
+                description = "Minecraft Game Version",
+                property = versionProperty,
+                choices = MinecraftVersionHandler.minecraftVersions,
+                category = SettingCategory.GENERAL
+            )
+        )
+    }
+
     override fun toString(): String {
-        return "GameInstance(id=$id, name='$name', version=${version?.id}, javaPath=$javaPath, directory=$directory, lastPlayed=$lastPlayed)"
+        return "GameInstance(id=$id, name='$name', version=${version?.id}, directory=$directory, lastPlayed=$lastPlayed)"
     }
 
     inline fun <reified T : Component> getComponent(): T? {
