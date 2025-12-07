@@ -12,7 +12,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 object InstanceManager {
-    private val INSTANCE_DIRECTORY = getDefaultDataLocation().resolve("instances")
+    val INSTANCE_DIRECTORY = getDefaultDataLocation().resolve("instances")
     val instances: ObservableList<GameInstance> = FXCollections.observableArrayList()
 
     fun loadAllInstances() {

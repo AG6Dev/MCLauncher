@@ -7,6 +7,7 @@ import dev.ag6.mclauncher.view.create_instance.CreateInstanceView
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.control.Button
+import javafx.scene.control.ChoiceBox
 import javafx.scene.control.TextField
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
@@ -31,6 +32,7 @@ class InstancesView : View {
         HBox.setHgrow(searchField, Priority.ALWAYS)
         children += searchField
         children += createViewToggle()
+        children += createSortByField()
         children += createInstanceButton()
     }
 
@@ -49,6 +51,19 @@ class InstancesView : View {
             instanceList.toggleView()
         }
     }
+
+    private fun createSortByField(): ChoiceBox<String> = ChoiceBox<String>().apply {
+        items += listOf("Name", "Last Played")
+        selectionModel.selectFirst()
+        selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            when (newValue) {
+                "Name" -> instanceList.instances.sortBy { it.name.lowercase() }
+                "Last Played" -> instanceList.instances.sortBy { it.lastPlayed }
+            }
+        }
+    }
+
+
 
     private fun createInstanceButton(): Button = Button().apply {
         text = "Create Instance"

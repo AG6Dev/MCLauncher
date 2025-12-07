@@ -14,7 +14,7 @@ import javafx.scene.layout.TilePane
 import javafx.scene.layout.VBox
 
 class InstanceList : StackPane() {
-    private val instances: ObservableList<GameInstance> = FXCollections.observableArrayList<GameInstance>().apply {
+    val instances: ObservableList<GameInstance> = FXCollections.observableArrayList<GameInstance>().apply {
         Bindings.bindContent(this, InstanceManager.instances)
     }
 

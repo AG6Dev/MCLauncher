@@ -29,20 +29,23 @@ class GameInstance(
     name: String,
     icon: String? = "default_icons/grass.png",
     version: MinecraftVersion?,
-    val directory: String,
+    directory: String,
     var lastPlayed: String? = "",
 ) : Cloneable {
-    val nameProperty = SimpleStringProperty(name)
+    var directory = directory
+        private set
+
+    private val nameProperty = SimpleStringProperty(name)
     var name: String
         get() = nameProperty.get()
         set(value) = nameProperty.set(value)
 
-    val iconProperty = SimpleStringProperty(icon)
+    private val iconProperty = SimpleStringProperty(icon)
     var icon: String?
         get() = iconProperty.get()
         set(value) = iconProperty.set(value)
 
-    val versionProperty = SimpleObjectProperty<MinecraftVersion?>(version)
+    private val versionProperty = SimpleObjectProperty<MinecraftVersion?>(version)
     var version: MinecraftVersion?
         get() = versionProperty.get()
         set(value) = versionProperty.set(value)
@@ -77,6 +80,14 @@ class GameInstance(
         } catch (e: Exception) {
             MCLauncher.LOGGER.error(e) { "Error while saving instance $name, $id" }
         }
+    }
+
+    private fun renameInstance(newName: String) {
+        val newDir = InstanceManager.INSTANCE_DIRECTORY.resolve(newName)
+        name = newName
+        Files.move(directory.toPath(), newDir)
+        directory = newDir.toString()
+        save()
     }
 
     inline fun <reified T : Component> getComponentById(componentId: String): T? {
@@ -121,7 +132,8 @@ class GameInstance(
                 name = "Instance Name",
                 description = "The name of this instance.",
                 property = nameProperty,
-                category = SettingCategory.GENERAL
+                category = SettingCategory.GENERAL,
+                onChange = { _, newValue -> renameInstance(newValue) }
             ),
             StringSetting(
                 name = "Icon Path",

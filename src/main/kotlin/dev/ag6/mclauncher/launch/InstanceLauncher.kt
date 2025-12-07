@@ -20,6 +20,8 @@ object InstanceLauncher {
 
     //TODO: Consider creating a LaunchTask class which takes in the launch context
     fun launchInstance(gameInstance: GameInstance) = scope.launch {
+        if (launchProcesses[gameInstance]?.isAlive == true) return@launch
+
         if (gameInstance.version == null) return@launch // TODO: Show error to user via UI popup
 
         val launchContext = InstanceLaunchContext(gameInstance)
