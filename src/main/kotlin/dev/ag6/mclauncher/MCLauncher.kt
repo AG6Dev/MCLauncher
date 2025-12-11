@@ -58,7 +58,8 @@ class MCLauncher : Application() {
     }
 
     companion object {
-        const val VERSION: String = "1.0.0"
+        const val VERSION = "1.0.0"
+        const val BRAND = "MCLauncher"
 
         val LOGGER = KotlinLogging.logger("MCLauncher")
         val HTTP_CLIENT = OkHttpClient()

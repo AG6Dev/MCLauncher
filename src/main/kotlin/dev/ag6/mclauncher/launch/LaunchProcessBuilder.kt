@@ -2,9 +2,8 @@ package dev.ag6.mclauncher.launch
 
 import dev.ag6.mclauncher.instance.component.JavaComponent
 import dev.ag6.mclauncher.instance.component.LaunchComponent
-import dev.ag6.mclauncher.instance.component.MinecraftGameComponent
+import dev.ag6.mclauncher.instance.component.minecraft.MinecraftGameComponent
 import java.io.File
-import kotlin.io.path.pathString
 
 class LaunchProcessBuilder(
     private val launchContext: InstanceLaunchContext
@@ -56,8 +55,6 @@ class LaunchProcessBuilder(
         }
 
         val separator = File.pathSeparator
-        classPath.addAll(launchContext.libraries.map { it.pathString })
-        classPath.add(launchContext.clientJar.toString())
         return classPath.joinToString(separator) { it }.trimEnd(*separator.toCharArray())
     }
 }

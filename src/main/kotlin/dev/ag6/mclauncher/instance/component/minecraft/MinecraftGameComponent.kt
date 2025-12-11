@@ -1,6 +1,10 @@
-package dev.ag6.mclauncher.instance.component
+package dev.ag6.mclauncher.instance.component.minecraft
 
 import com.google.gson.JsonObject
+import dev.ag6.mclauncher.MCLauncher
+import dev.ag6.mclauncher.instance.component.ConfigurableComponent
+import dev.ag6.mclauncher.instance.component.LaunchComponent
+import dev.ag6.mclauncher.instance.component.MainClassProvider
 import dev.ag6.mclauncher.instance.component.settings.NumberSetting
 import dev.ag6.mclauncher.instance.component.settings.Setting
 import dev.ag6.mclauncher.launch.InstanceLaunchContext
@@ -8,7 +12,6 @@ import dev.ag6.mclauncher.launch.InstanceLauncher
 import dev.ag6.mclauncher.launch.tasks.*
 import dev.ag6.mclauncher.minecraft.piston.PistonLibrary
 import dev.ag6.mclauncher.task.CompositeTask
-import dev.ag6.mclauncher.util.toPath
 import javafx.beans.property.SimpleIntegerProperty
 import java.nio.file.Path
 
@@ -29,6 +32,7 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
     @Suppress("unchecked_cast")
     override suspend fun prepareLaunch(ctx: InstanceLaunchContext) {
         val executor = ctx.taskExecutor
+
         ctx.pistonMeta = executor.submit(FetchVersionMetadataTask(ctx.version)).await()
 
         val meta = ctx.pistonMeta
@@ -42,8 +46,7 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
         executor.submit(CompositeTask("Download Game Assets", true, assetTasks)).await()
     }
 
-    override fun addGameArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {
-        /* gameArgumentMap["auth_player_name"] = "Player"
+    override fun addGameArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {/* gameArgumentMap["auth_player_name"] = "Player"
            gameArgumentMap["auth_uuid"] = ""
            gameArgumentMap["auth_access_token"] = ""
            gameArgumentMap["auth_xuid"] = ""
@@ -77,22 +80,23 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
     }
 
     override fun addJvmArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {
+        val nativesDir = ctx.instance.getMinecraftDirectory().resolve("natives")
+
         args.addAll(
             listOf(
-                "-Djava.library.path\u003d${ctx.instance.directory.toPath().resolve("natives")}",
-                "-Djna.tmpdir\u003d${ctx.instance.directory.toPath().resolve("natives")}",
-                "-Dorg.lwjgl.system.SharedLibraryExtractPath\u003d${
-                    ctx.instance.directory.toPath().resolve("natives")
-                }",
-                "-Dio.netty.native.workdir\u003d${ctx.instance.directory.toPath().resolve("natives")}",
-                "-Dminecraft.launcher.brand\u003dMCLauncher",
-                "-Dminecraft.launcher.version\u003d1.0.0"
+                "-Djava.library.path\u003d${nativesDir}",
+                "-Djna.tmpdir\u003d${nativesDir}",
+                "-Dorg.lwjgl.system.SharedLibraryExtractPath\u003d${nativesDir}",
+                "-Dio.netty.native.workdir\u003d${nativesDir}",
+                "-Dminecraft.launcher.brand\u003d${MCLauncher.BRAND}",
+                "-Dminecraft.launcher.version\u003d${MCLauncher.VERSION}"
             )
         )
     }
 
     override fun addToClasspath(ctx: InstanceLaunchContext, classpath: MutableList<String>) {
-
+        ctx.libraries.map { it.toString() }.forEach(classpath::add)
+        classpath.add(ctx.clientJar.toString())
     }
 
     override fun getMainClass(ctx: InstanceLaunchContext): String {
@@ -112,14 +116,9 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
     override fun getSettings(): List<Setting<*>> {
         return listOf(
             NumberSetting(
-                "Custom Window Width",
-                "The custom width of the game window. Set to 0 to use default.",
-                _customWidth
-            ),
-            NumberSetting(
-                "Custom Window Height",
-                "The custom height of the game window. Set to 0 to use default.",
-                _customHeight
+                "Custom Window Width", "The custom width of the game window. Set to 0 to use default.", _customWidth
+            ), NumberSetting(
+                "Custom Window Height", "The custom height of the game window. Set to 0 to use default.", _customHeight
             )
         )
     }
