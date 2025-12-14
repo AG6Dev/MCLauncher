@@ -57,6 +57,7 @@ class InstanceListItem(private val instance: GameInstance) : HBox() {
     private fun createButtonContainer(): HBox = HBox(10.0).apply {
         isVisible = false
         alignment = Pos.CENTER
+        //TEMP
         children += createButton("Settings") { ContentManager.changeView(InstanceSettingsView(instance)) }
         children += createButton("Run") { InstanceLauncher.launchInstance(instance) }
         children += createButton("Delete") {

@@ -46,19 +46,16 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
         executor.submit(CompositeTask("Download Game Assets", true, assetTasks)).await()
     }
 
-    override fun addGameArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {/* gameArgumentMap["auth_player_name"] = "Player"
+    override fun addGameArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {
+        fun putArgument(key: String, value: String) {
+            args.add("--$key")
+            args.add(value)
+        }
+
+        /* gameArgumentMap["auth_player_name"] = "Player"
            gameArgumentMap["auth_uuid"] = ""
            gameArgumentMap["auth_access_token"] = ""
            gameArgumentMap["auth_xuid"] = ""
-
-           gameArgumentMap["version_name"] = launchContext.version.id
-           gameArgumentMap["gameDir"] = launchContext.instance.getMinecraftDirectory().toString()
-           gameArgumentMap["asset_root"] = launchContext.toString()
-           gameArgumentMap["assets_index_name"] = launchContext.assetIndex.id
-           gameArgumentMap["clientid"] = launchContext.version.id
-
-           gameArgumentMap["resolution_width"] = "1280"
-           gameArgumentMap["resolution_height"] = "720"
 
            gameArgumentMap["quickPlayPath"] = ""
            gameArgumentMap["quickPlaySingleplayer"] = ""
@@ -66,17 +63,16 @@ class MinecraftGameComponent : LaunchComponent, ConfigurableComponent, MainClass
            gameArgumentMap["quickPlayRealms"] = ""
                 */
 
-        args.add("--version")
-        args.add(ctx.version.id)
-        args.add("--accessToken")
-        args.add("\"\"")
-        args.add("--assetsDir")
-        args.add(InstanceLauncher.ASSETS_LOCATION.toString())
-        args.add("--assetIndex")
-        args.add(ctx.assetIndex.id)
+        putArgument("version", ctx.version.id)
+        putArgument("accessToken", "\"\"")
 
-        customWidth.takeIf { it > 0 }?.let { args.add("--width $customWidth") }
-        customHeight.takeIf { it > 0 }?.let { args.add("--height $customHeight") }
+        putArgument("versionType", ctx.pistonMeta.type.name.lowercase())
+        putArgument("gameDir", ctx.instance.getMinecraftDirectory().toString())
+        putArgument("assetsDir", InstanceLauncher.ASSETS_LOCATION.toString())
+        putArgument("assetIndex", ctx.assetIndex.id)
+
+        customWidth.takeIf { it > 0 }?.let { putArgument("width", customWidth.toString()) }
+        customHeight.takeIf { it > 0 }?.let { putArgument("height", customHeight.toString()) }
     }
 
     override fun addJvmArgs(ctx: InstanceLaunchContext, args: MutableList<String>) {

@@ -16,7 +16,7 @@ import java.time.Instant
 object InstanceLauncher {
     val ASSETS_LOCATION: Path = getDefaultDataLocation().resolve("assets")
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    val launchProcesses: MutableMap<GameInstance, Process> = mutableMapOf()
+    private val launchProcesses: MutableMap<GameInstance, Process> = mutableMapOf()
 
     //TODO: Consider creating a LaunchTask class which takes in the launch context
     fun launchInstance(gameInstance: GameInstance) = scope.launch {
@@ -29,7 +29,17 @@ object InstanceLauncher {
         gameInstance.launchComponents.forEach { it.prepareLaunch(launchContext) }
 
         val commandBuilder = LaunchProcessBuilder(launchContext)
+        val startTime = System.currentTimeMillis()
         val process = commandBuilder.build()
+
+        process.onExit().thenRun {
+            val endTime = System.currentTimeMillis()
+            val timePlayed = endTime - startTime
+            gameInstance.timePlayed += timePlayed
+            gameInstance.lastPlayed = Instant.now().toString()
+            gameInstance.save()
+            launchProcesses.remove(gameInstance)
+        }
 
         Platform.runLater {
             val window = WindowCreator.create {
@@ -42,8 +52,5 @@ object InstanceLauncher {
         }
 
         launchProcesses[gameInstance] = process
-
-        gameInstance.lastPlayed = Instant.now().toString()
-        gameInstance.save()
     }
 }

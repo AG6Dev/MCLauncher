@@ -3,10 +3,7 @@ package dev.ag6.mclauncher.instance
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import dev.ag6.mclauncher.MCLauncher
-import dev.ag6.mclauncher.instance.component.Component
-import dev.ag6.mclauncher.instance.component.ConfigurableComponent
-import dev.ag6.mclauncher.instance.component.LaunchComponent
-import dev.ag6.mclauncher.instance.component.MainClassProvider
+import dev.ag6.mclauncher.instance.component.*
 import dev.ag6.mclauncher.instance.component.registry.ComponentRegistry
 import dev.ag6.mclauncher.instance.component.settings.ChoiceSetting
 import dev.ag6.mclauncher.instance.component.settings.Setting
@@ -31,6 +28,7 @@ class GameInstance(
     version: MinecraftVersion?,
     directory: String,
     var lastPlayed: String? = "",
+    var timePlayed: Long = 0L
 ) : Cloneable {
     var directory = directory
         private set
@@ -103,6 +101,7 @@ class GameInstance(
         json.addProperty("version", version?.id)
         json.addProperty("directory", directory)
         json.addProperty("lastPlayed", lastPlayed)
+        json.addProperty("timePlayed", timePlayed)
 
         val components = JsonArray()
         for (component in this.components) {
@@ -148,16 +147,29 @@ class GameInstance(
                 property = versionProperty,
                 choices = MinecraftVersionHandler.minecraftVersions,
                 category = SettingCategory.GENERAL
+            ),
+            ChoiceSetting(
+                name = "Mod Loader",
+                description = "Mod Loader for this instance.",
+                choices = listOf("None", "Forge", "Fabric"),
+                category = SettingCategory.GENERAL
             )
         )
     }
 
-    override fun toString(): String {
-        return "GameInstance(id=$id, name='$name', version=${version?.id}, directory=$directory, lastPlayed=$lastPlayed)"
+    fun getModLoaderComponent(): ModLoaderComponent? {
+        if (components.none { it is ModLoaderComponent }) {
+            return null
+        }
+        return components.filterIsInstance<ModLoaderComponent>().last()
     }
 
     inline fun <reified T : Component> getComponent(): T? {
         return components.filterIsInstance<T>().firstOrNull()
+    }
+
+    override fun toString(): String {
+        return "GameInstance(id=$id, name='$name', version=${version?.id}, directory=$directory, lastPlayed=$lastPlayed)"
     }
 
     public override fun clone(): GameInstance {

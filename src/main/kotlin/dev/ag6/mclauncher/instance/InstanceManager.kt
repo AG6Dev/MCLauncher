@@ -7,12 +7,13 @@ import dev.ag6.mclauncher.util.toPath
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import java.nio.file.Files
+import java.nio.file.Path
 import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 object InstanceManager {
-    val INSTANCE_DIRECTORY = getDefaultDataLocation().resolve("instances")
+    val INSTANCE_DIRECTORY: Path = getDefaultDataLocation().resolve("instances")
     val instances: ObservableList<GameInstance> = FXCollections.observableArrayList()
 
     fun loadAllInstances() {
