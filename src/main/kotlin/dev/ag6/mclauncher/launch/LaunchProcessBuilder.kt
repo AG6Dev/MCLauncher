@@ -16,7 +16,7 @@ class LaunchProcessBuilder(
             ?: throw IllegalStateException("Minecraft game component not found, cannot launch instance")
         val launchComponents = instance.launchComponents
 
-        val processBuilder = ProcessBuilder(javaComponent.javaPath)
+        val processBuilder = ProcessBuilder(javaComponent.javaPath.value)
         processBuilder.directory(instance.getMinecraftDirectory().toFile())
 
         processBuilder.command().add("-cp")

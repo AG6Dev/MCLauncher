@@ -85,6 +85,15 @@ class WindowCreator {
             creator.onCreate(stage)
         }
 
+        fun createPopup(block: WindowCreator.() -> Unit): Stage {
+            return create {
+                stageStyle = StageStyle.UTILITY
+                modality = Modality.APPLICATION_MODAL
+                resizable = false
+                block()
+            }
+        }
+
         fun destroyWindow(stage: Stage) {
             stage.close()
         }

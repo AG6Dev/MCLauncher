@@ -1,4 +1,4 @@
-package dev.ag6.mclauncher.instance.component.settings
+package dev.ag6.mclauncher.instance.settings
 
 import javafx.beans.property.*
 
@@ -23,7 +23,8 @@ sealed class Setting<T>(
 class NumberSetting(
     name: String,
     description: String?,
-    property: Property<Number> = SimpleIntegerProperty(),
+    defaultValue: Number = 0,
+    property: Property<Number> = SimpleIntegerProperty(defaultValue.toInt()),
     category: SettingCategory = SettingCategory.OTHER,
     onChange: (oldValue: Number, newValue: Number) -> Unit = { _, _ -> }
 ) : Setting<Number>(name, description, property, category, onChange)

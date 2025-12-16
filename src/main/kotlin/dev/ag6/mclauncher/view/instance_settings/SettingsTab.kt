@@ -1,7 +1,7 @@
 package dev.ag6.mclauncher.view.instance_settings
 
 import dev.ag6.mclauncher.instance.GameInstance
-import dev.ag6.mclauncher.instance.component.settings.*
+import dev.ag6.mclauncher.instance.settings.*
 import javafx.beans.property.Property
 import javafx.geometry.Pos
 import javafx.scene.control.*

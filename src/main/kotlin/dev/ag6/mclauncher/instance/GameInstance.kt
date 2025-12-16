@@ -5,10 +5,10 @@ import com.google.gson.JsonObject
 import dev.ag6.mclauncher.MCLauncher
 import dev.ag6.mclauncher.instance.component.*
 import dev.ag6.mclauncher.instance.component.registry.ComponentRegistry
-import dev.ag6.mclauncher.instance.component.settings.ChoiceSetting
-import dev.ag6.mclauncher.instance.component.settings.Setting
-import dev.ag6.mclauncher.instance.component.settings.SettingCategory
-import dev.ag6.mclauncher.instance.component.settings.StringSetting
+import dev.ag6.mclauncher.instance.settings.ChoiceSetting
+import dev.ag6.mclauncher.instance.settings.Setting
+import dev.ag6.mclauncher.instance.settings.SettingCategory
+import dev.ag6.mclauncher.instance.settings.StringSetting
 import dev.ag6.mclauncher.minecraft.MinecraftVersion
 import dev.ag6.mclauncher.minecraft.MinecraftVersionHandler
 import dev.ag6.mclauncher.util.toPath

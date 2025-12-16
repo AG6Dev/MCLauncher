@@ -2,36 +2,22 @@ package dev.ag6.mclauncher.instance.component.fabric
 
 import com.google.gson.JsonObject
 import dev.ag6.mclauncher.instance.component.MainClassProvider
+import dev.ag6.mclauncher.instance.component.Mod
 import dev.ag6.mclauncher.instance.component.ModLoaderComponent
-import dev.ag6.mclauncher.instance.mods.Mod
+import dev.ag6.mclauncher.instance.component.fabric.meta.FabricLauncherMeta
 import dev.ag6.mclauncher.launch.InstanceLaunchContext
 
 class FabricLaunchData(
-    val mainClass: String
+    val fabricLauncherMeta: FabricLauncherMeta
 )
 
 class FabricLoaderComponent : ModLoaderComponent, MainClassProvider {
-
-
-    private val mods: MutableList<Mod> = mutableListOf()
+    override fun getMods(): List<Mod> {
+        TODO("Not yet implemented")
+    }
 
     override fun getComponentId(): String {
         return "fabric"
-    }
-
-    override suspend fun prepareLaunch(ctx: InstanceLaunchContext) {
-        ctx.taskExecutor.submit(FetchFabricMetadataTask(ctx.version, "0.18.1")).await().let {
-            val launchData = FabricLaunchData(it.launcherMeta.mainClass.client)
-            ctx.put(FabricLaunchData::class.java, launchData)
-        }
-    }
-
-    override fun addToClasspath(ctx: InstanceLaunchContext, classpath: MutableList<String>) {
-        val fabricData = ctx.get(FabricLaunchData::class.java)
-    }
-
-    override fun getMainClass(ctx: InstanceLaunchContext): String {
-        return ctx.get(FabricLaunchData::class.java).mainClass
     }
 
     override fun saveConfigData(data: JsonObject) {
@@ -42,7 +28,8 @@ class FabricLoaderComponent : ModLoaderComponent, MainClassProvider {
         TODO("Not yet implemented")
     }
 
-    override fun getMods(): List<Mod> {
+    override fun getMainClass(ctx: InstanceLaunchContext): String {
         TODO("Not yet implemented")
     }
+
 }

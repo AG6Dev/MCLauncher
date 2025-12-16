@@ -2,8 +2,8 @@ package dev.ag6.mclauncher.view.instance_settings
 
 import dev.ag6.mclauncher.instance.GameInstance
 import dev.ag6.mclauncher.instance.InstanceManager
-import dev.ag6.mclauncher.instance.component.settings.Setting
-import dev.ag6.mclauncher.instance.component.settings.SettingCategory
+import dev.ag6.mclauncher.instance.settings.Setting
+import dev.ag6.mclauncher.instance.settings.SettingCategory
 import dev.ag6.mclauncher.util.getImageOrDefault
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.View
