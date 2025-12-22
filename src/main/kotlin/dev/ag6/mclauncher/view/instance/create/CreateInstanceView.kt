@@ -1,4 +1,4 @@
-package dev.ag6.mclauncher.view.create_instance
+package dev.ag6.mclauncher.view.instance.create
 
 import dev.ag6.mclauncher.instance.InstanceManager
 import dev.ag6.mclauncher.view.ContentManager

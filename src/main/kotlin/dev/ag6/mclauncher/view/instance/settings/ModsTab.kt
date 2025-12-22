@@ -1,4 +1,4 @@
-package dev.ag6.mclauncher.view.instance_settings
+package dev.ag6.mclauncher.view.instance.settings
 
 import dev.ag6.mclauncher.instance.GameInstance
 import javafx.scene.control.ChoiceBox

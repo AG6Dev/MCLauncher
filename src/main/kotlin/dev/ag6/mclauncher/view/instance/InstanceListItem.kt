@@ -7,7 +7,7 @@ import dev.ag6.mclauncher.util.createSpacer
 import dev.ag6.mclauncher.util.getImageOrDefault
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.components.ConfirmActionWindow
-import dev.ag6.mclauncher.view.instance_settings.InstanceSettingsView
+import dev.ag6.mclauncher.view.instance.settings.InstanceSettingsView
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.geometry.Pos

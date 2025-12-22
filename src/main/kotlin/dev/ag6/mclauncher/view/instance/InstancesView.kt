@@ -3,7 +3,7 @@ package dev.ag6.mclauncher.view.instance
 import dev.ag6.mclauncher.view.ContentManager
 import dev.ag6.mclauncher.view.View
 import dev.ag6.mclauncher.view.components.TwoButtonToggle
-import dev.ag6.mclauncher.view.create_instance.CreateInstanceView
+import dev.ag6.mclauncher.view.instance.create.CreateInstanceView
 import javafx.event.EventHandler
 import javafx.geometry.Insets
 import javafx.scene.control.Button
