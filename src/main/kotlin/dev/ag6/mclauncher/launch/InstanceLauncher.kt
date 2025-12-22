@@ -16,7 +16,7 @@ import java.time.Instant
 object InstanceLauncher {
     val ASSETS_LOCATION: Path = getDefaultDataLocation().resolve("assets")
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-    private val launchProcesses: MutableMap<GameInstance, Process> = mutableMapOf()
+    val launchProcesses: MutableMap<GameInstance, Process> = mutableMapOf()
 
     //TODO: Consider creating a LaunchTask class which takes in the launch context
     fun launchInstance(gameInstance: GameInstance) = scope.launch {

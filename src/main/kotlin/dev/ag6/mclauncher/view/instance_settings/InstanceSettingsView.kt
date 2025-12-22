@@ -49,6 +49,8 @@ class InstanceSettingsView(private val original: GameInstance) : View {
         for ((category, settings) in organisedSettings) {
             tabs += SettingsTab(category, settings)
         }
+        tabs += ModsTab(editedInstance)
+        tabs += LogTab(original)
     }
 
     private fun createNavigationButtons(): HBox = HBox(10.0).apply {
